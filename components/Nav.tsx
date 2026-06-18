@@ -3,8 +3,9 @@ import { site } from "@/lib/content";
 
 const links = [
   { href: "#services", label: "Services" },
-  { href: "#subjects", label: "Subjects" },
   { href: "#team", label: "Meet the Team" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Contact" },
 ];
 
