@@ -8,33 +8,65 @@ import type { InquiryState } from "@/lib/inquiry";
 // suggested default threshold.
 const RECAPTCHA_THRESHOLD = 0.5;
 
-async function verifyRecaptcha(token: string): Promise<boolean> {
+// A verification outcome carries enough detail to diagnose *why* it failed.
+// - "unavailable": our side / config problem (missing key, network, Google
+//   error). The visitor can't fix it; retry later.
+// - "rejected": reCAPTCHA judged the request (no token, low score, bot). This
+//   is the normal "prove you're human" path.
+type RecaptchaResult =
+  | { ok: true; detail: string }
+  | { ok: false; kind: "unavailable" | "rejected"; detail: string };
+
+async function verifyRecaptcha(token: string): Promise<RecaptchaResult> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
   if (!secret) {
-    throw new Error("Missing RECAPTCHA_SECRET_KEY environment variable");
+    return { ok: false, kind: "unavailable", detail: "RECAPTCHA_SECRET_KEY is not set on the server" };
   }
-  if (!token) return false;
+  if (!token) {
+    return { ok: false, kind: "rejected", detail: "no token received from the browser (reCAPTCHA script may not have loaded)" };
+  }
 
-  const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({ secret, response: token }),
-    // Never cache verification requests.
-    cache: "no-store",
-  });
+  let res: Response;
+  try {
+    res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret, response: token }),
+      cache: "no-store", // Never cache verification requests.
+    });
+  } catch (err) {
+    return { ok: false, kind: "unavailable", detail: `could not reach Google siteverify: ${String(err)}` };
+  }
 
-  if (!res.ok) return false;
+  if (!res.ok) {
+    return { ok: false, kind: "unavailable", detail: `siteverify returned HTTP ${res.status}` };
+  }
+
   const data = (await res.json()) as {
     success: boolean;
     score?: number;
     action?: string;
+    "error-codes"?: string[];
   };
 
-  return (
-    data.success &&
-    data.action === "inquiry" &&
-    (data.score ?? 0) >= RECAPTCHA_THRESHOLD
-  );
+  if (!data.success) {
+    const codes = data["error-codes"] ?? [];
+    // A bad/missing secret is a config problem, not a bot; treat as unavailable.
+    const isConfig = codes.some((c) => c.startsWith("invalid-input-secret") || c === "bad-request");
+    return {
+      ok: false,
+      kind: isConfig ? "unavailable" : "rejected",
+      detail: `siteverify rejected: ${codes.join(", ") || "no error-codes"}`,
+    };
+  }
+  if (data.action !== "inquiry") {
+    return { ok: false, kind: "rejected", detail: `unexpected action "${data.action}" (expected "inquiry")` };
+  }
+  const score = data.score ?? 0;
+  if (score < RECAPTCHA_THRESHOLD) {
+    return { ok: false, kind: "rejected", detail: `score ${score} below threshold ${RECAPTCHA_THRESHOLD}` };
+  }
+  return { ok: true, detail: `score ${score}` };
 }
 
 function clean(value: FormDataEntryValue | null): string {
@@ -53,7 +85,14 @@ export async function sendInquiry(
   const token = clean(formData.get("token"));
 
   const values = { name, email, format, subject, message };
-  const fail = (msg: string): InquiryState => ({ ok: false, message: msg, values });
+  // In development we append the internal detail to the user-facing message so
+  // it's visible right in the browser. In production the message stays clean.
+  const isDev = process.env.NODE_ENV !== "production";
+  const fail = (msg: string, detail?: string): InquiryState => ({
+    ok: false,
+    message: isDev && detail ? `${msg} [dev detail: ${detail}]` : msg,
+    values,
+  });
 
   // Basic server-side validation (never trust the client).
   if (!name || !email) {
@@ -64,14 +103,17 @@ export async function sendInquiry(
   }
 
   // Spam check.
-  let human = false;
-  try {
-    human = await verifyRecaptcha(token);
-  } catch {
-    return fail("Spam verification is temporarily unavailable. Please try again later.");
-  }
-  if (!human) {
-    return fail("We couldn't verify you're human. Please try again.");
+  const recaptcha = await verifyRecaptcha(token);
+  if (!recaptcha.ok) {
+    // Always log the reason server-side (terminal in dev, host logs in prod).
+    console.error(`reCAPTCHA ${recaptcha.kind}: ${recaptcha.detail}`);
+    if (recaptcha.kind === "unavailable") {
+      return fail(
+        "Spam verification is temporarily unavailable. Please try again later.",
+        recaptcha.detail,
+      );
+    }
+    return fail("We couldn't verify you're human. Please try again.", recaptcha.detail);
   }
 
   const text = [
