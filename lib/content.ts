@@ -4,16 +4,13 @@
 // ───────────────────────────────────────────────────────────────────────────
 
 export const site = {
-  name: "SC Tutoring",
+  name: "Sonoma Scholar Tutoring",
   tagline: "Personalized tutoring that builds confidence",
   description:
     "1-on-1 and small group sessions led by local Sonoma County educators who meet students where they are.",
-  email: "hello@sctutoring.com", // TODO: replace with your real contact email
+  email: "tutors@sonomascholars.com", // routes to the individual tutors
   phone: "", // optional — e.g. "(707) 555-1234"
   location: "Sonoma County — online & in-person", // service area
-  // Booking — paste your Calendly link here to enable the booking section.
-  // e.g. "https://calendly.com/sctutoring/intro-session". Leave empty to hide it.
-  calendlyUrl: "",
   social: {
     instagram: "", // e.g. "https://instagram.com/sctutoring"
     facebook: "",
@@ -43,6 +40,8 @@ export const subjects = [
   "Elementary Math",
   "Middle School Math",
   "Pre-Algebra",
+  "Biology",
+  "Chemistry",
   "Reading & Writing",
   "Creative Writing",
   "Essay & Application Help",
@@ -57,35 +56,47 @@ export type Tutor = {
   photo: string; // path under /public, e.g. "/headshots/andy.png"
   bio: string;
   subjects: string[];
+  // Google Appointment Scheduling embed URL (free, syncs to Google Calendar).
+  // In Google Calendar → create an appointment schedule → "Share" → copy the
+  // booking page link. It looks like:
+  //   https://calendar.google.com/calendar/appointments/schedules/XXXXXXXX
+  // Paste it here to add this tutor to the "Book a session" section.
+  bookingUrl?: string;
 };
 
 export const tutors: Tutor[] = [
   {
     name: "Natalie Miller",
     role: "Elementary & Middle School Math",
-    photo: "/headshots/natalie.png",
-    bio: "A 20-year resident of West Sonoma County, Natalie has spent the past four years substitute teaching across the county and is pursuing her Foundational-Level Mathematics Teaching Credential. She specializes in helping elementary and middle school students strengthen their math skills, overcome challenges, and build a positive, confident attitude toward learning — living for those “aha!” moments when a concept finally clicks.",
+    photo: "/headshots/natalie.jpg",
+    bio: "A 20-year resident of West Sonoma County, Natalie has spent the past four years substitute teaching across the county and is pursuing her Foundational-Level Mathematics Teaching Credential. She specializes in helping elementary and middle school students strengthen their math skills, overcome challenges, and build a positive, confident attitude toward learning, living for those “aha!” moments when a concept finally clicks.",
     subjects: ["Elementary Math", "Middle School Math", "Pre-Algebra"],
+    bookingUrl: "", // TODO: paste Natalie's Google Appointment Scheduling link
   },
   {
     name: "Andy Spring",
     role: "Reading, Writing & Performance",
-    photo: "/headshots/andy.png",
+    photo: "/headshots/andy.jpg",
     bio: "A lifelong Petaluma resident, Andy earned a B.A. in Literature with a concentration in Creative Writing from UC Santa Cruz, then studied screenwriting and acting at the Los Angeles Performing Arts Conservatory. He's completing his teaching credential through the Sonoma County Office of Education's “Be a Teacher” program and is dedicated to helping the next generation of students find their unique voice.",
     subjects: [
       "Reading & Writing",
       "Creative Writing",
       "Public Speaking & Performance",
     ],
+    bookingUrl: "", // TODO: paste Andy's Google Appointment Scheduling link
   },
   {
-    name: "Tim",
-    role: "Tutor",
+    name: "Tim Arapov",
+    role: "Biology & Chemistry",
     photo: "/headshots/tim.jpg", // TODO: add Tim's headshot to /public/headshots
-    bio: "Bio coming soon.", // TODO: add Tim's bio (bios/Tim_bio.txt was empty)
-    subjects: [],
+    bio: "A Healdsburg-based science teacher and researcher with a PhD in molecular microbiology, Tim spent years in the lab as a Principal Scientist in food science and a researcher at Duke before earning his teaching credential in Biology and Chemistry. He tutors at the high school and intro-college level, breaking hard concepts into plain language so students truly understand the material instead of just memorizing it. A former English learner himself, he's patient and meets students where they are.",
+    subjects: ["Biology", "Chemistry"],
+    bookingUrl: "", // TODO: paste Tim's Google Appointment Scheduling link
   },
 ];
+
+// True once at least one tutor has a booking link configured above.
+export const bookingEnabled = tutors.some((t) => Boolean(t.bookingUrl));
 
 // ── Pricing / packages ────────────────────────────────────────────────────────
 // Set `price` to a string ("$" amount or "Free"). `unit` is shown after it.

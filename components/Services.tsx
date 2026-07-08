@@ -22,7 +22,7 @@ function Icon({ name }: { name: string }) {
 
 export default function Services() {
   return (
-    <section id="services" className="py-20 sm:py-28">
+    <section id="services" className="py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl sm:text-4xl font-bold">How we work together</h2>

@@ -1,10 +1,10 @@
-import { packages, pricingNote, site } from "@/lib/content";
+import { packages, pricingNote, bookingEnabled } from "@/lib/content";
 
 export default function Pricing() {
-  const bookHref = site.calendlyUrl ? "#booking" : "#contact";
+  const bookHref = bookingEnabled ? "#booking" : "#contact";
 
   return (
-    <section id="pricing" className="py-20 sm:py-28">
+    <section id="pricing" className="py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <h2 className="text-3xl sm:text-4xl font-bold">Simple, fair pricing</h2>

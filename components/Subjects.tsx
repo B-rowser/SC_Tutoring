@@ -2,7 +2,7 @@ import { subjects } from "@/lib/content";
 
 export default function Subjects() {
   return (
-    <section id="subjects" className="bg-sand py-20 sm:py-28">
+    <section id="subjects" className="bg-sand py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-6 text-center">
         <h2 className="text-3xl sm:text-4xl font-bold">What we tutor</h2>
         <p className="mx-auto mt-4 max-w-2xl text-muted">

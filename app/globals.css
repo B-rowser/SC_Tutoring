@@ -2,14 +2,14 @@
 
 /* ── Light & inviting palette ─────────────────────────────────────────────── */
 @theme {
-  --color-cream: #fbfaf7; /* warm page background */
-  --color-sand: #f4efe7; /* soft section tint */
+  --color-cream: #f8fafc; /* cool, airy page background */
+  --color-sand: #eef2f8; /* soft blue-gray section tint */
 
-  --color-brand: #0d9488; /* teal — primary */
-  --color-brand-dark: #0f766e; /* hover */
-  --color-brand-soft: #ccfbf1; /* tint */
+  --color-brand: #2563eb; /* blue — primary */
+  --color-brand-dark: #1d4ed8; /* hover */
+  --color-brand-soft: #dbeafe; /* tint */
 
-  --color-accent: #f59e0b; /* warm amber — secondary */
+  --color-accent: #f59e0b; /* warm amber — secondary, for contrast */
   --color-accent-soft: #fef3c7;
 
   --color-ink: #1f2937; /* body text */

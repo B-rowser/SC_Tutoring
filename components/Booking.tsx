@@ -1,51 +1,74 @@
 "use client";
 
-import { useEffect } from "react";
-import { site } from "@/lib/content";
+import { useState } from "react";
+import { tutors } from "@/lib/content";
+
+// Google Appointment Scheduling pages support being embedded in an iframe.
+// We append the gv=true flag Google uses for its embedded ("gadget") view.
+function embedUrl(url: string) {
+  return url.includes("gv=true")
+    ? url
+    : url + (url.includes("?") ? "&" : "?") + "gv=true";
+}
 
 export default function Booking() {
-  // Section only appears once a Calendly link is configured in lib/content.ts.
-  const url = site.calendlyUrl;
+  const bookable = tutors.filter((t) => Boolean(t.bookingUrl));
+  const [active, setActive] = useState(0);
 
-  useEffect(() => {
-    if (!url) return;
-    const script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    document.body.appendChild(script);
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [url]);
+  // Section only appears once at least one tutor has a booking link set.
+  if (bookable.length === 0) return null;
 
-  if (!url) return null;
+  const current = bookable[active];
 
   return (
-    <section id="booking" className="bg-sand py-20 sm:py-28">
+    <section id="booking" className="bg-sand py-14 sm:py-16">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
           <h2 className="text-3xl sm:text-4xl font-bold">Book a session</h2>
           <p className="mx-auto mt-4 max-w-xl text-muted">
-            Pick a time that works for you — choose a free consultation or jump
-            straight into a session.
+            Choose your tutor and pick a time that works for you. Bookings sync
+            straight to their calendar.
           </p>
         </div>
 
-        <div
-          className="calendly-inline-widget mt-10 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5"
-          data-url={url}
-          style={{ minWidth: "320px", height: "680px" }}
-        />
+        {bookable.length > 1 && (
+          <div className="mt-10 flex flex-wrap justify-center gap-2">
+            {bookable.map((t, i) => (
+              <button
+                key={t.name}
+                onClick={() => setActive(i)}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
+                  i === active
+                    ? "bg-brand text-white"
+                    : "bg-white text-ink ring-1 ring-black/5 hover:bg-brand-soft"
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-8 overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-black/5">
+          <iframe
+            key={current.bookingUrl}
+            src={embedUrl(current.bookingUrl as string)}
+            title={`Book a session with ${current.name}`}
+            className="w-full"
+            style={{ height: "700px", border: 0 }}
+            loading="lazy"
+          />
+        </div>
 
         <p className="mt-6 text-center text-sm text-muted">
           Trouble seeing the calendar?{" "}
           <a
-            href={url}
+            href={current.bookingUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-brand hover:underline"
           >
-            Open the booking page
+            Open {current.name}&apos;s booking page
           </a>
           .
         </p>

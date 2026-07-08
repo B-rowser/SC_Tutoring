@@ -4,7 +4,7 @@ export default function Testimonials() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section className="bg-brand py-20 sm:py-28 text-white">
+    <section className="bg-brand py-14 sm:py-16 text-white">
       <div className="mx-auto max-w-6xl px-6">
         <h2 className="text-center text-3xl sm:text-4xl font-bold">
           What families are saying
