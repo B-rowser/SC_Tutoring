@@ -4,7 +4,7 @@
 // ───────────────────────────────────────────────────────────────────────────
 
 export const site = {
-  name: "Sonoma Scholar Tutoring",
+  name: "Sonoma Scholars Tutoring",
   tagline: "Personalized tutoring that builds confidence",
   description:
     "1-on-1 and small group sessions led by local Sonoma County educators who meet students where they are.",
@@ -164,15 +164,6 @@ export const faqs = [
 ];
 
 // ── Optional: testimonials (great for trust). Leave empty to hide section. ────
-export const testimonials = [
-  {
-    quote:
-      "My daughter went from dreading math to looking forward to her sessions. Her grade jumped a full letter in one semester.",
-    author: "Parent of a 10th grader",
-  },
-  {
-    quote:
-      "The small group format kept me motivated. It felt less like a class and more like studying with friends who actually get it.",
-    author: "Writing student",
-  },
-];
+// Add real quotes here as { quote, author } once you have them — the section
+// automatically shows when this array is non-empty and hides when it's empty.
+export const testimonials: { quote: string; author: string }[] = [];
