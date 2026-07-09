@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { tutors, subjects, site, bookingEnabled, type Tutor } from "@/lib/content";
 import { sendInquiry } from "@/lib/actions";
 import { initialInquiryState } from "@/lib/inquiry";
@@ -27,6 +27,21 @@ function initials(name: string) {
 
 function Headshot({ tutor }: { tutor: Tutor }) {
   const [broken, setBroken] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const mounted = useRef(false);
+
+  // An <img> can fire its error event during hydration, before this fiber has
+  // committed — calling setState then warns ("state update on a component that
+  // hasn't mounted yet"). Instead, detect an already-failed image here, after
+  // mount, and only let onError update state once we're mounted.
+  useEffect(() => {
+    mounted.current = true;
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0) {
+      setBroken(true);
+    }
+  }, []);
+
   if (broken) {
     return (
       <div className="flex h-28 w-28 shrink-0 items-center justify-center rounded-2xl bg-brand-soft text-3xl font-bold text-brand-dark sm:h-32 sm:w-32">
@@ -37,10 +52,13 @@ function Headshot({ tutor }: { tutor: Tutor }) {
   // eslint-disable-next-line @next/next/no-img-element
   return (
     <img
+      ref={imgRef}
       src={tutor.photo}
       alt={tutor.name}
       className="h-28 w-28 shrink-0 rounded-2xl object-cover sm:h-32 sm:w-32"
-      onError={() => setBroken(true)}
+      onError={() => {
+        if (mounted.current) setBroken(true);
+      }}
     />
   );
 }

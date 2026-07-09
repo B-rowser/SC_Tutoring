@@ -46,6 +46,8 @@ export const subjects = [
   "Creative Writing",
   "Essay & Application Help",
   "Public Speaking & Performance",
+  "SAT Prep",
+  "ACT Prep",
   "Study Skills",
 ];
 
@@ -69,7 +71,7 @@ export const tutors: Tutor[] = [
     name: "Natalie Miller",
     role: "Elementary & Middle School Math",
     photo: "/headshots/natalie.jpg",
-    bio: "A 20-year resident of West Sonoma County, Natalie has spent the past four years substitute teaching across the county and is pursuing her Foundational-Level Mathematics Teaching Credential. She specializes in helping elementary and middle school students strengthen their math skills, overcome challenges, and build a positive, confident attitude toward learning, living for those “aha!” moments when a concept finally clicks.",
+    bio: "A 20-year resident of West Sonoma County, Natalie has spent the past four years substitute teaching across the county and is pursuing her Foundational-Level Mathematics Teaching Credential. She holds a B.A. in Communications from San Francisco State University. She specializes in helping elementary and middle school students strengthen their math skills, overcome challenges, and build a positive, confident attitude toward learning, living for those “aha!” moments when a concept finally clicks.",
     subjects: ["Elementary Math", "Middle School Math", "Pre-Algebra"],
     bookingUrl: "", // TODO: paste Natalie's Google Appointment Scheduling link
   },

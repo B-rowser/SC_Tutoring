@@ -33,7 +33,7 @@ export default function Nav() {
           href="#contact"
           className="rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark transition-colors"
         >
-          Book a session
+          Book
         </a>
       </nav>
     </header>
