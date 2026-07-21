@@ -15,7 +15,52 @@ export const site = {
     instagram: "", // e.g. "https://instagram.com/sctutoring"
     facebook: "",
   },
+
+  // ── Search engine settings ────────────────────────────────────────────────
+  // The live address of the site, no trailing slash. Used for canonical URLs,
+  // the sitemap, and social share previews.
+  url: "https://sonomascholars.com",
+  // The blue headline Google shows in results. Aim for under ~60 characters
+  // and lead with what people actually type into search.
+  seoTitle: "Tutoring in Sonoma County — Sonoma Scholars Tutoring",
+  // Google Analytics 4 measurement ID (Admin → Data streams → Measurement ID).
+  // Not a secret — it is visible to anyone who views the page source. Set it to
+  // "" to switch analytics off everywhere. The NEXT_PUBLIC_GA_ID environment
+  // variable overrides this if it is set.
+  gaId: "G-VDSW8Q07LT",
+  // The gray text under the headline. Under ~155 characters.
+  seoDescription:
+    "Personalized 1-on-1 and small group tutoring across Sonoma County, online and in person. Math, science, reading, writing, and SAT/ACT prep from local credentialed educators.",
 };
+
+// Search phrases the site should be found for. These are a weak ranking signal
+// on their own — their real job is to keep the page copy, headings, and
+// descriptions above pointed at the same terms.
+export const seoKeywords = [
+  "tutoring Sonoma County",
+  "Santa Rosa tutor",
+  "Petaluma tutor",
+  "Healdsburg tutor",
+  "math tutor Sonoma County",
+  "science tutor Sonoma County",
+  "reading and writing tutor",
+  "SAT prep Sonoma County",
+  "ACT prep Sonoma County",
+  "private tutor near me",
+];
+
+// Towns served — used for the local-business structured data that powers
+// "tutor near me" style results.
+export const serviceAreas = [
+  "Santa Rosa",
+  "Petaluma",
+  "Healdsburg",
+  "Sebastopol",
+  "Rohnert Park",
+  "Windsor",
+  "Sonoma",
+  "Cotati",
+];
 
 // ── Services we advertise ────────────────────────────────────────────────────
 export const services = [
